@@ -1,0 +1,7 @@
+Ignoring warning by using flowing sentance:
+ 
+import os
+os.environ["TF_CPP_MIN_LOG_LEVEL"]="2"
+
+The log level of tensorflow including:info,warn,error,fatal
+info(0)<warn(1)<error(2)<fatal(3)
