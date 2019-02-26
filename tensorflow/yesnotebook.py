@@ -1,3 +1,4 @@
+                  Chaper1
 #1.Ignoring warning by using flowing sentance:
  
 import os
@@ -14,3 +15,11 @@ value1 = tf.cosntant([
                    ],tf.float32)
 value2 = tf.constant([10,10])
 result = tf.add(value1,value2)
+#3.transaction bettween ndarray and tensor,Numpy can store and processing mult-dimentional array,the core data struct is ndarry.tensorflow will convert tensor to ndarray by creating session,so that we can print the value of tensor:
+
+t = tf.constant([1,2,3],tf.float32)
+sess = tf.Session()
+array = sess.run(t)
+t = tf.convert_to_tensor(array,tf.float32,name='t')#"type come back"
+
+
