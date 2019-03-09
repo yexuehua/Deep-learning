@@ -19,7 +19,7 @@ result = tf.add(value1,value2)
 
 t = tf.constant([1,2,3],tf.float32)
 sess = tf.Session()
-array = sess.run(t)
+array = sess.run(t)#tensor convert to ndarray
 t = tf.convert_to_tensor(array,tf.float32,name='t')#"type come back"
 
 
