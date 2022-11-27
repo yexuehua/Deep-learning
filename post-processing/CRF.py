@@ -20,16 +20,17 @@ def rle_decode(rle_mask):
     starts, lengths = [np.asarray(x, dtype=int) for x in (s[0:][::2], s[1:][::2])]
     starts -= 1
     ends = starts + lengths
-    img = np.zeros(101*101, dtype=np.uint8)
+    img = np.zeros(101 * 101, dtype=np.uint8)
     for lo, hi in zip(starts, ends):
         img[lo:hi] = 1
-    return img.reshape(101,101)
+    return img.reshape(101, 101)
+
 
 img = imread("im1.png")
 
 # convert the annotation's RGB color to a single 32-bit integer color 0xBBGGRR
 anno_rgb = imread("anno1.png").astype(np.uint32)
-anno_lb1 = anno_rgb[:,:,0] + (anno_rgb[:,:,1] << 8) + (anno_rgb[:,:,2] << 16)
+anno_lb1 = anno_rgb[:, :, 0] + (anno_rgb[:, :, 1] << 8) + (anno_rgb[:, :, 2] << 16)
 
 # Convert the 32bit integer color to 1,2...labels.
 colors, labels = np.unique(anno_lb1, return_inverse=True)
@@ -37,7 +38,8 @@ colors, labels = np.unique(anno_lb1, return_inverse=True)
 # But remove the all-0 black, that won't exist in MAP!
 HAS_UNK = 0 in colors
 if HAS_UNK:
-    print("Found a full-black pixel in annotation image, assuming it means 'unknow' label, and will not be present in the output!")
+    print(
+        "Found a full-black pixel in annotation image, assuming it means 'unknow' label, and will not be present in the output!")
     print("If 0 is an acture label, consider writing your own code, or simply giving your labels only non-zero values.")
     colors = colors[1:]
 
@@ -63,7 +65,23 @@ d.addPairwiseGaussian(sxy=(3, 3),
                       normalization=dcrf.NORMALIZE_SYMMETRIC)
 
 # This adds the color-dependent term, i.e. features are (x, y, r, g, b)
-d.addPairwiseBilateral(sxy=(80, 80),srgb=(13, 13, 13), rgbim=img,
-                       combat=10,
+d.addPairwiseBilateral(sxy=(80, 80), srgb=(13, 13, 13), rgbim=img,
+                       compat=10,
                        kernel=dcrf.DIAG_KERNEL,
                        normalization=dcrf.NORMALIZE_SYMMETRIC)
+
+# do inference and compute MAP
+Q = d.inference(5)
+# find out the most probable class
+MAP = np.argmax(Q, axis=0)
+
+# convert the MAP back to the corresponding colors and save the image
+# Note that there is no "unknown" here anymore, no matter what we had at first
+MAP = colorize[MAP, :]
+imsave("out.png", MAP.reshape(img.shape))
+
+# Just randomly manually run the iterations
+Q, tmp1, tmp2 = d.startInference()
+for i in range(5):
+    print("KL-divergence at {}: {}".format(i, d.klDivergence(Q)))
+    d.stepInference(Q, tmp1, tmp2)
