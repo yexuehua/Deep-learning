@@ -17,6 +17,7 @@ pytorch/yolo/darknet-master/convnet/
 pytorch/yolo/darknet-master/decaf/
 pytorch/yolo/darknet-master/submission/
 pytorch/yolo/darknet-master/cfg/
+pytorch/yolo/data/
 darknet
 .fuse*
 
