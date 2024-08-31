@@ -1,9 +1,10 @@
 import numpy
 import cv2
 
-img=numpy.uint8 (iskemiMaskedImg)
+
+img=numpy.uint8(iskemiMaskedImg)
 contours, hier =cv2.findContours (img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-mask=numpy.zeros (img.shape, numpy.uint8)
+mask=numpy.zeros(img.shape, numpy.uint8)
 
 # find the biggest contour (c) by the area
 c = max(contours, key = cv2.contourArea)
